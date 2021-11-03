@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\RegisterFormRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,10 +22,10 @@ class AuthController extends BaseController
             ['password' => bcrypt($request->password)]
         ));
 
-        return $this->sendResponse($user, 'User register successfully.');
+        return $this->sendResponse($user, 'Пользователь успешно зарегеистрирован.');
     }
 
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
 
@@ -43,9 +44,9 @@ class AuthController extends BaseController
         return $this->respondWithToken($token);
     }
 
-    public function me(): \Illuminate\Http\JsonResponse
+    public function me()
     {
-        return $this->sendResponse(auth()->user());
+        return $this->sendResponse(new UserResource(User::findOrFail(\auth()->id())));
     }
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse

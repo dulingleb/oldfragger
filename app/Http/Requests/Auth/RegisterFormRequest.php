@@ -21,14 +21,20 @@ class RegisterFormRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'username' => 'required|alpha_dash|max:255|unique:users|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|max:32',
             'c_password' => 'required|same:password',
-            'standoff_id' => 'required|numeric|min:1|max:9999999999999'
+            'standoff_id' => 'required|numeric|min:1|max:9999999999999',
+            'device_id' => 'required|numeric|min:0|exists:devices,id'
         ];
+    }
+
+    public function wantsJson()
+    {
+        return true;
     }
 }

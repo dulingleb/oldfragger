@@ -43,33 +43,33 @@ class Handler extends ExceptionHandler
         });
     }
 
-    public function render($request, Throwable $exception)
-    {
-        $code = 422;
-
-        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
-            return response()->json(['status' => false, 'message' => 'Not Found!'], 404, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
-        }
-
-        if ($exception instanceof AuthenticationException) {
-            $code = 401;
-        }
-
-        $message = $this->convert_from_latin1_to_utf8_recursively($exception->getMessage());
-
-        if ($exception instanceof ValidationException) {
-            return response()->json(['status' => false, 'message' => $message, 'errors' => $exception->validator->errors()],422, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
-        }
-
-        return response()->json([
-            'status' => false,
-            'message' => $message,
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'trace' => $exception->getTrace()],
-            $code, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
-        //return parent::prepareJsonResponse($request, $exception);
-    }
+//    public function render($request, Throwable $exception)
+//    {
+//        $code = 422;
+//
+//        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
+//            return response()->json(['status' => false, 'message' => 'Not Found!'], 404, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
+//        }
+//
+//        if ($exception instanceof AuthenticationException) {
+//            $code = 401;
+//        }
+//
+//        $message = $this->convert_from_latin1_to_utf8_recursively($exception->getMessage());
+//
+//        if ($exception instanceof ValidationException) {
+//            return response()->json(['status' => false, 'message' => $message, 'errors' => $exception->validator->errors()],422, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
+//        }
+//
+////        return response()->json([
+////            'status' => false,
+////            'message' => $message,
+////            'file' => $exception->getFile(),
+////            'line' => $exception->getLine(),
+////            'trace' => $exception->getTrace()],
+////            $code, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
+//        return parent::prepareJsonResponse($request, $exception);
+//    }
 
     public function convert_from_latin1_to_utf8_recursively($dat)
     {
