@@ -15,6 +15,32 @@ class AuthController extends BaseController
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
+    /**
+     * @OA\Post  (
+     *     path = "/register",
+     *     summary = "Registration",
+     *     description = "Send data to registration",
+     *     tags = {"register"},
+     *     @OA\RequestBody (
+     *         required = true,
+     *         @OA\JsonContent (
+     *             required = {"username", "password", "email", "c_password", "standoff_id"},
+     *             @OA\Property (property = "username", type = "string"),
+     *             @OA\Property (property = "email", type = "string", format = "email"),
+     *             @OA\Property (property = "password", type = "string", format = "password"),
+     *             @OA\Property (property = "c_password", type = "string", format = "password"),
+     *             @OA\Property (property = "standoff_id", type = "integer")
+     *         )
+     *     ),
+     *     @OA\Response (
+     *         response = 200,
+     *         description = "Success response",
+     *         @OA\JsonContent (
+     *             @OA\Property (property = "message", type = "string")
+     *         )
+     *     )
+     * )
+     */
     public function register(RegisterFormRequest $request)
     {
         $user = User::create(array_merge(

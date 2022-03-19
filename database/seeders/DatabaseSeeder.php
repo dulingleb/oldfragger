@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // \App\Models\UserResource::factory(10)->create();
 
         $this->call([
-            DeviceSeeder::class
+            //DeviceSeeder::class
         ]);
     }
 }

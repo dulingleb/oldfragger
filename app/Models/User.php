@@ -8,10 +8,26 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+
+/**
+ * @OA\Schema (
+ *  required = {"password", "username", "email"},
+ *  @OA\Xml (name="User"),
+ *  @OA\Property(property = "id", type = "integer", readOnly = true),
+ *  @OA\Property(property = "username", type = "string"),
+ *  @OA\Property(property = "email", type = "string"),
+ *  @OA\Property(property = "password", type = "string"),
+ *  @OA\Property(property = "clan", type = "string"),
+ *  @OA\Property(property = "last_ip",type = "string"),
+ *  @OA\Property(property = "device_id", type = "integer"),
+ *  @OA\Property(property = "standoff_id", type = "integer")
+ * )
+ */
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.

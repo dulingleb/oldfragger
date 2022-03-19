@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info (
+ *     title="Andrey Vorobey",
+ *     version="1.0.0"
+ * )
+ */
 class BaseController extends Controller
 {
     public function sendResponse($result, $message = null): \Illuminate\Http\JsonResponse

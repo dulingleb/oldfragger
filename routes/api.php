@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,6 +25,13 @@ Route::group([
     Route::post('login', [AuthController::class, 'login']);
     Route::get('me', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'user'
+], function ($router) {
+    Route::post('update', [UserController::class, 'update']);
 });
 
 Route::post('devices/find', [DeviceController::class, 'find']);

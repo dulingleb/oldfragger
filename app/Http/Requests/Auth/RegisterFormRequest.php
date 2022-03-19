@@ -11,7 +11,7 @@ class RegisterFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -29,11 +29,11 @@ class RegisterFormRequest extends FormRequest
             'password' => 'required|string|min:6|max:32',
             'c_password' => 'required|same:password',
             'standoff_id' => 'required|numeric|min:1|max:9999999999999',
-            'device_id' => 'required|numeric|min:0|exists:devices,id'
+            //'device.*' => 'required'
         ];
     }
 
-    public function wantsJson()
+    public function wantsJson(): bool
     {
         return true;
     }

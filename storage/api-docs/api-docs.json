@@ -1,0 +1,118 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Andrey Vorobey",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "register"
+                ],
+                "summary": "Registration",
+                "description": "Send data to registration",
+                "operationId": "0903f2e0df1a8857bee538fc055417f0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username",
+                                    "password",
+                                    "email",
+                                    "c_password",
+                                    "standoff_id"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "c_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "standoff_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "required": [
+                    "password",
+                    "username",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "clan": {
+                        "type": "string"
+                    },
+                    "last_ip": {
+                        "type": "string"
+                    },
+                    "device_id": {
+                        "type": "integer"
+                    },
+                    "standoff_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
