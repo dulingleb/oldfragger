@@ -7,7 +7,9 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthController extends BaseController
 {
@@ -20,7 +22,7 @@ class AuthController extends BaseController
      *     path = "/register",
      *     summary = "Registration",
      *     description = "Send data to registration",
-     *     tags = {"register"},
+     *     tags = {"Users"},
      *     @OA\RequestBody (
      *         required = true,
      *         @OA\JsonContent (
@@ -38,6 +40,14 @@ class AuthController extends BaseController
      *         @OA\JsonContent (
      *             @OA\Property (property = "message", type = "string")
      *         )
+     *     ),
+     *     @OA\Response (
+     *         response = 422,
+     *         description = "Wrong fields",
+     *         @OA\JsonContent (
+     *             @OA\Property (property = "message", type = "string"),
+     *             @OA\Property (property = "errors", type = "array", @OA\Items())
+     *         )
      *     )
      * )
      */
@@ -48,15 +58,52 @@ class AuthController extends BaseController
             ['password' => bcrypt($request->password)]
         ));
 
-        return $this->sendResponse($user, 'Пользователь успешно зарегеистрирован.');
+        return $this->sendResponse(null, 'Пользователь успешно зарегеистрирован.');
     }
 
+    /**
+     * @OA\Post  (
+     *     path = "/auth/login",
+     *     summary = "Authentification",
+     *     description = "Send data to login",
+     *     tags = {"Users"},
+     *     @OA\RequestBody (
+     *         required = true,
+     *         @OA\JsonContent (
+     *             required = {"password", "email"},
+     *             @OA\Property (property = "email", type = "string", format = "email"),
+     *             @OA\Property (property = "password", type = "string", format = "password"),
+     *             @OA\Property (property = "remember_me", type = "boolean")
+     *         )
+     *     ),
+     *     @OA\Response (
+     *         response = 201,
+     *         description = "Success logined",
+     *         @OA\JsonContent (
+     *             @OA\Property (property = "status", type = "boolean"),
+     *             @OA\Property (property = "data", type = "object",
+     *                  @OA\Property (property = "access_token", type = "string"),
+     *                  @OA\Property (property = "token_type", type = "string", default = "bearer"),
+     *                  @OA\Property (property = "expires_in", type = "string", format="datetime", example = "2022-03-21 13:11:56")
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response (
+     *         response = 401,
+     *         description = "Wrong email or password",
+     *         @OA\JsonContent (
+     *             @OA\Property (property = "status", type = "boolean", default = "false"),
+     *             @OA\Property (property = "message", type = "string")
+     *         )
+     *     )
+     * )
+     */
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
 
         if (!Auth::attempt($credentials)) {
-            return $this->sendError('Неверный логин или пароль', null, 401);
+            return $this->sendError('Неверный логин или пароль', null, ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         $token = Auth::user()->createToken(config('app.name'));
@@ -70,11 +117,64 @@ class AuthController extends BaseController
         return $this->respondWithToken($token);
     }
 
+    /**
+     * @OA\Get(
+     *      path="/auth/me",
+     *      operationId="getAuthUser",
+     *      tags={"Users"},
+     *      summary="Get auth user",
+     *      description="Returns auth user data",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (property = "data", type = "array", @OA\Items(
+     *                  @OA\Property (property = "status", type = "boolean"),
+     *                  @OA\Property (property = "data", type = "object", ref="#/components/schemas/User")
+     *             )),
+     *          )
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request"
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     * )
+     */
     public function me()
     {
         return $this->sendResponse(new UserResource(User::findOrFail(\auth()->id())));
     }
 
+    /**
+     * @OA\Post  (
+     *     path = "/auth/logout",
+     *     summary = "Logout",
+     *     description = "Logout",
+     *     tags = {"Users"},
+     *     @OA\Response (
+     *         response = 200,
+     *         description = "Successfully logged out",
+     *         @OA\JsonContent (
+     *             @OA\Property (property = "message", type = "string", default="Successfully logged out"),
+     *         )
+     *     ),
+     *     @OA\Response (
+     *         response = 401,
+     *         description = "Not logged",
+     *         @OA\JsonContent (
+     *             @OA\Property (property = "message", type = "string", default="Unauthentificated")
+     *         )
+     *     )
+     * )
+     */
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->user()->token()->revoke();
