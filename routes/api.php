@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AvatarController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,6 +33,7 @@ Route::group([
     'prefix' => 'user'
 ], function ($router) {
     Route::post('update', [UserController::class, 'update']);
+    Route::post('avatar/update', [AvatarController::class, 'update']);
 });
 
 Route::post('devices/find', [DeviceController::class, 'find']);
